@@ -17,7 +17,7 @@ resource "aws_security_group" "instance" {
   }
 
   tags {
-    Name = "${var.team_name}-yocto-instance-sg"
+    Name = "${var.team_name}-ehime-instance-sg"
   }
 }
 
@@ -41,20 +41,20 @@ resource "aws_security_group" "elb" {
   }
 
   tags {
-    Name = "${var.team_name}-yocto-elb-sg"
+    Name = "${var.team_name}-ehime-elb-sg"
   }
 }
 
-data "template_file" "yoctouserdata" {
-  template = "${file("${path.module}/yocto-userdata.tpl")}"
+data "template_file" "ehimeuserdata" {
+  template = "${file("${path.module}/ehime-userdata.tpl")}"
 }
 
-resource "aws_launch_configuration" "yoctolaunch" {
+resource "aws_launch_configuration" "ehimelaunch" {
   name_prefix = "${var.team_name}-"
   image_id = "${var.ami_id}"
   instance_type = "${var.instance_type}"
   key_name = "${var.sshkeyname}"
-  user_data = "${data.template_file.yoctouserdata.rendered}"
+  user_data = "${data.template_file.ehimeuserdata.rendered}"
   security_groups = ["${aws_security_group.instance.id}"]
   associate_public_ip_address = true
   lifecycle { create_before_destroy = true }
@@ -62,12 +62,12 @@ resource "aws_launch_configuration" "yoctolaunch" {
 
 resource "aws_autoscaling_group" "monkeytarget" {
   name_prefix = "${var.team_name}-"
-  launch_configuration = "${aws_launch_configuration.yoctolaunch.id}"
+  launch_configuration = "${aws_launch_configuration.ehimelaunch.id}"
   max_size = 2
   min_size = 1
   desired_capacity = 1
   vpc_zone_identifier = ["${aws_subnet.publicsubnets.*.id}"]
-  load_balancers = ["${aws_elb.yocto.id}"]
+  load_balancers = ["${aws_elb.ehime.id}"]
   health_check_type = "ELB"
   health_check_grace_period = 120
   wait_for_capacity_timeout = "3m"
@@ -77,14 +77,14 @@ resource "aws_autoscaling_group" "monkeytarget" {
   tags = [
     {
       key = "Name"
-      value = "${var.team_name}-yocto"
+      value = "${var.team_name}-ehime"
       propagate_at_launch = true
     }
   ]
 }
 
-resource "aws_elb" "yocto" {
-  name = "${var.team_name}-yocto-elb"
+resource "aws_elb" "ehime" {
+  name = "${var.team_name}-ehime-elb"
   subnets = ["${aws_subnet.publicsubnets.*.id}"]
   security_groups = ["${aws_security_group.elb.id}"]
   listener {
