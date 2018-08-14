@@ -3,12 +3,12 @@ variable "profile" {
 }
 
 variable "region" {
-  type = "string"
+  type    = "string"
   default = "eu-central-1"
 }
 
 variable "vpc_cidr" {
-  type = "string"
+  type    = "string"
   default = "172.16.0.0/16"
 }
 
@@ -25,7 +25,7 @@ variable "chaos_monkey_ami_id" {
 }
 
 variable "instance_type" {
-  type = "string"
+  type    = "string"
   default = "t2.nano"
 }
 

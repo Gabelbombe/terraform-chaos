@@ -4,7 +4,7 @@ yum install -y docker
 
 REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document |awk -F\" '/region/ {print $4}')
 
-docker run \
+docker run                                                                                                      \
    -e SIMIANARMY_RECORDER_SDB_DOMAIN=${recorder_sdb_domain}                                                     \
    -e SIMIANARMY_CLIENT_LOCALDB_ENABLED=${client_localdb_enabled}                                               \
    -e SIMIANARMY_CLIENT_CLOUDFORMATIONMODE_ENABLED=${client_cloudformationmode_enabled}                         \

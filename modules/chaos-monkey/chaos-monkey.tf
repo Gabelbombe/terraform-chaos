@@ -25,13 +25,13 @@ EOF
 }
 
 resource "aws_security_group" "chaos_monkey_instance" {
-  name = "Allow chaos monkey to connect to internet"
+  name   = "Allow chaos monkey to connect to internet"
   vpc_id = "${var.vpc_id}"
 
   egress {
-    from_port = 0
-    protocol = "-1"
-    to_port = 0
+    from_port   = 0
+    protocol    = "-1"
+    to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -45,15 +45,19 @@ resource "aws_iam_role_policy_attachment" "chaos_monkey_role_ec2_full_access" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
 }
 
+data "template_file" "monkey_user_data" {
+  template = "${file("${path.module}/monkey-userdata.tpl")}"
+}
+
 resource "aws_instance" "chaos_monkey" {
-  subnet_id = "${var.subnet_id}"
-  ami = "${var.ami_id}"
-  instance_type = "${var.instance_type}"
-  key_name = "${var.sshkeyname}"
-  user_data = "${data.template_file.monkey_user_data.rendered}"
+  subnet_id                   = "${var.subnet_id}"
+  ami                         = "${var.ami_id}"
+  instance_type               = "${var.instance_type}"
+  key_name                    = "${var.sshkeyname}"
+  user_data                   = "${data.template_file.monkey_user_data.rendered}"
   associate_public_ip_address = true
-  iam_instance_profile = "${aws_iam_instance_profile.chaos_monkey_profile.id}"
-  vpc_security_group_ids = ["${aws_security_group.sshaccess.id}", "${aws_security_group.chaos_monkey_instance.id}"]
+  iam_instance_profile        = "${aws_iam_instance_profile.chaos_monkey_profile.id}"
+  vpc_security_group_ids      = ["${aws_security_group.sshaccess.id}", "${aws_security_group.chaos_monkey_instance.id}"]
 
   tags {
     Name = "${var.name_prefix}monkey_of_chaos"

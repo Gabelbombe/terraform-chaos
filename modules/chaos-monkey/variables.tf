@@ -11,7 +11,7 @@ variable "ami_id" {
 }
 
 variable "instance_type" {
-  type = "string"
+  type    = "string"
   default = "t2.nano"
 }
 
@@ -21,7 +21,7 @@ variable "sshkeyname" {
 
 variable "name_prefix" {
   default = ""
-  type = "string"
+  type    = "string"
 }
 
 # Simian Army Client Config
