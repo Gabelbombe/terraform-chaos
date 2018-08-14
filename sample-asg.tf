@@ -48,7 +48,7 @@ resource "aws_security_group" "elb_sg" {
 }
 
 data "template_file" "ehime_userdata" {
-  template = "${file("${path.module}/templatesehime-userdata.tpl")}"
+  template = "${file("${path.module}/templates/ehime-userdata.tpl")}"
 }
 
 resource "aws_launch_configuration" "ehime_lc" {
