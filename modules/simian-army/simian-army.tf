@@ -35,6 +35,13 @@ resource "aws_security_group" "simian_army_instance" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 8080
+    protocol    = "tcp"
+    to_port     = 8080
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   tags {
     Name = "${var.name_prefix}simian-army-instance-sg"
   }
