@@ -1,4 +1,4 @@
-resource "aws_security_group" "instance" {
+resource "aws_security_group" "instance_sg" {
   name   = "Allow ELB access to instance"
   vpc_id = "${aws_vpc.vpc.id}"
 
@@ -6,7 +6,7 @@ resource "aws_security_group" "instance" {
     from_port       = 8080
     protocol        = "tcp"
     to_port         = 8080
-    security_groups = ["${aws_security_group.elb.id}"]
+    security_groups = ["${aws_security_group.elb_sg.id}"]
   }
 
   egress {
@@ -21,7 +21,7 @@ resource "aws_security_group" "instance" {
   }
 }
 
-resource "aws_security_group" "elb" {
+resource "aws_security_group" "elb_sg" {
   name   = "Allow public access via http"
   vpc_id = "${aws_vpc.vpc.id}"
 
@@ -47,17 +47,17 @@ resource "aws_security_group" "elb" {
   }
 }
 
-data "template_file" "ehimeuserdata" {
-  template = "${file("${path.module}/ehime-userdata.tpl")}"
+data "template_file" "ehime_userdata" {
+  template = "${file("${path.module}/templatesehime-userdata.tpl")}"
 }
 
-resource "aws_launch_configuration" "ehimelaunch" {
+resource "aws_launch_configuration" "ehime_lc" {
   name_prefix                 = "${var.team_name}-"
   image_id                    = "${var.ami_id}"
   instance_type               = "${var.instance_type}"
   key_name                    = "${var.sshkeyname}"
-  user_data                   = "${data.template_file.ehimeuserdata.rendered}"
-  security_groups             = ["${aws_security_group.instance.id}"]
+  user_data                   = "${data.template_file.ehime_userdata.rendered}"
+  security_groups             = ["${aws_security_group.instance_sg.id}"]
   associate_public_ip_address = true
 
   lifecycle {
@@ -65,14 +65,14 @@ resource "aws_launch_configuration" "ehimelaunch" {
   }
 }
 
-resource "aws_autoscaling_group" "monkeytarget" {
+resource "aws_autoscaling_group" "asg" {
   name_prefix               = "${var.team_name}-"
-  launch_configuration      = "${aws_launch_configuration.ehimelaunch.id}"
+  launch_configuration      = "${aws_launch_configuration.ehime_lc.id}"
   max_size                  = 2
   min_size                  = 1
   desired_capacity          = 1
-  vpc_zone_identifier       = ["${aws_subnet.publicsubnets.*.id}"]
-  load_balancers            = ["${aws_elb.ehime.id}"]
+  vpc_zone_identifier       = ["${aws_subnet.public_subnets.*.id}"]
+  load_balancers            = ["${aws_elb.elb.id}"]
   health_check_type         = "ELB"
   health_check_grace_period = 120
   wait_for_capacity_timeout = "3m"
@@ -90,10 +90,10 @@ resource "aws_autoscaling_group" "monkeytarget" {
   ]
 }
 
-resource "aws_elb" "ehime" {
+resource "aws_elb" "elb" {
   name            = "${var.team_name}-ehime-elb"
-  subnets         = ["${aws_subnet.publicsubnets.*.id}"]
-  security_groups = ["${aws_security_group.elb.id}"]
+  subnets         = ["${aws_subnet.public_subnets.*.id}"]
+  security_groups = ["${aws_security_group.elb_sg.id}"]
 
   listener {
     instance_port     = 8080
