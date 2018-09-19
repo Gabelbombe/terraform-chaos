@@ -55,7 +55,7 @@ resource "aws_launch_configuration" "ehime_lc" {
   name_prefix                 = "${var.team_name}-"
   image_id                    = "${var.ami_id}"
   instance_type               = "${var.instance_type}"
-  key_name                    = "${var.sshkeyname}"
+  key_name                    = "${var.ssh_keyname}"
   user_data                   = "${data.template_file.ehime_userdata.rendered}"
   security_groups             = ["${aws_security_group.instance_sg.id}"]
   associate_public_ip_address = true

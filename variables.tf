@@ -1,10 +1,11 @@
 variable "profile" {
-  type = "string"
+  type    = "string"
+  default = "default"
 }
 
 variable "region" {
   type    = "string"
-  default = "eu-central-1"
+  default = "us-west-2"
 }
 
 variable "vpc_cidr" {
@@ -13,7 +14,8 @@ variable "vpc_cidr" {
 }
 
 variable "team_name" {
-  type = "string"
+  type    = "string"
+  default = "testing"
 }
 
 variable "ami_id" {
@@ -30,6 +32,6 @@ variable "instance_type" {
   default = "t2.nano"
 }
 
-variable "sshkeyname" {
+variable "ssh_keyname" {
   type = "string"
 }

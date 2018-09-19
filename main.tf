@@ -24,7 +24,7 @@ data "aws_availability_zones" "current" {}
 module "simian_army" {
   source      = "modules/simian-army"
   ami_id      = "${data.aws_ami.ubuntu.id}"
-  sshkeyname  = "${var.sshkeyname}"
+  ssh_keyname = "${var.ssh_keyname}"
   name_prefix = "${var.team_name}-"
   subnet_id   = "${element(aws_subnet.public_subnets.*.id, 0)}"
   vpc_id      = "${aws_vpc.vpc.id}"

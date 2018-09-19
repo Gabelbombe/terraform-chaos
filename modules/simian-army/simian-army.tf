@@ -43,7 +43,7 @@ resource "aws_security_group" "simian_army_instance" {
   }
 
   tags {
-    Name = "${var.name_prefix}simian-army-instance-sg"
+    Name = "${var.name_prefix}-simian-army-instance-sg"
   }
 }
 
@@ -56,14 +56,14 @@ resource "aws_instance" "simian_army" {
   subnet_id                   = "${var.subnet_id}"
   ami                         = "${var.ami_id}"
   instance_type               = "${var.instance_type}"
-  key_name                    = "${var.sshkeyname}"
-  user_data                   = "${data.template_file.monkey_user_data.rendered}"
+  key_name                    = "${var.ssh_keyname}"
+  user_data                   = "${data.template_file.user_data.rendered}"
   associate_public_ip_address = true
   iam_instance_profile        = "${aws_iam_instance_profile.simian_army_profile.id}"
   vpc_security_group_ids      = ["${aws_security_group.sshaccess.id}", "${aws_security_group.simian_army_instance.id}"]
 
   tags {
-    Name = "${var.name_prefix}monkey_of_chaos"
+    Name = "${var.name_prefix}-monkey_of_chaos"
   }
 
   lifecycle {

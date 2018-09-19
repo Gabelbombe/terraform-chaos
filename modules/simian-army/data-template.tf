@@ -1,5 +1,5 @@
-data "template_file" "monkey_user_data" {
-  template = "${file("${path.module}/monkey-userdata.tpl")}"
+data "template_file" "user_data" {
+  template = "${file("${path.module}/templates/userdata.tmpl.sh")}"
 
   vars {
     recorder_sdb_domain                           = "${var.recorder_sdb_domain}"

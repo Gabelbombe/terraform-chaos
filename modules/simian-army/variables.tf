@@ -15,13 +15,13 @@ variable "instance_type" {
   default = "t2.nano"
 }
 
-variable "sshkeyname" {
+variable "ssh_keyname" {
   type = "string"
 }
 
 variable "name_prefix" {
-  default = ""
   type    = "string"
+  default = ""
 }
 
 # Simian Army Client Config
