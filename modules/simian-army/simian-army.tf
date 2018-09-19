@@ -3,25 +3,45 @@ resource "aws_iam_instance_profile" "simian_army_profile" {
   role = "${aws_iam_role.simian_army_role.name}"
 }
 
-resource "aws_iam_role" "simian_army_role" {
-  name = "simian_army_role"
-  path = "/"
+data "aws_iam_policy_document" "simian_army" {
+  statement {
+    sid    = "chaos"
+    effect = "Allow"
 
-  assume_role_policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Action": "sts:AssumeRole",
-            "Principal": {
-               "Service": "ec2.amazonaws.com"
-            },
-            "Effect": "Allow",
-            "Sid": ""
-        }
+    actions = [
+      "sts:AssumeRole",
     ]
+
+    principals = {
+      type = "AWS"
+
+      identifiers = [
+        "ec2.amazonaws.com",
+      ]
+    }
+  }
 }
-EOF
+
+resource "aws_iam_role" "simian_army_role" {
+  name               = "simian_army_role"
+  path               = "/"
+  assume_role_policy = "${data.aws_iam_policy_document.simian_army.json}"
+
+  //   assume_role_policy = <<EOF
+  // {
+  //     "Version": "2012-10-17",
+  //     "Statement": [
+  //         {
+  //             "Action": "sts:AssumeRole",
+  //             "Principal": {
+  //                "Service": "ec2.amazonaws.com"
+  //             },
+  //             "Effect": "Allow",
+  //             "Sid": ""
+  //         }
+  //     ]
+  // }
+  // EOF
 }
 
 resource "aws_security_group" "simian_army_instance" {
@@ -43,7 +63,7 @@ resource "aws_security_group" "simian_army_instance" {
   }
 
   tags {
-    Name = "${var.name_prefix}-simian-army-instance-sg"
+    Name = "${var.name_prefix}simian-army-instance-sg"
   }
 }
 
@@ -63,7 +83,7 @@ resource "aws_instance" "simian_army" {
   vpc_security_group_ids      = ["${aws_security_group.sshaccess.id}", "${aws_security_group.simian_army_instance.id}"]
 
   tags {
-    Name = "${var.name_prefix}-monkey_of_chaos"
+    Name = "${var.name_prefix}monkey_of_chaos"
   }
 
   lifecycle {
