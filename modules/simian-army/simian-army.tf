@@ -5,7 +5,7 @@ resource "aws_iam_instance_profile" "simian_army_profile" {
 
 data "aws_iam_policy_document" "simian_army" {
   statement {
-    sid    = "chaos"
+    sid    = "ChaosAssumeRole"
     effect = "Allow"
 
     actions = [
@@ -26,22 +26,6 @@ resource "aws_iam_role" "simian_army_role" {
   name               = "simian_army_role"
   path               = "/"
   assume_role_policy = "${data.aws_iam_policy_document.simian_army.json}"
-
-  //   assume_role_policy = <<EOF
-  // {
-  //     "Version": "2012-10-17",
-  //     "Statement": [
-  //         {
-  //             "Action": "sts:AssumeRole",
-  //             "Principal": {
-  //                "Service": "ec2.amazonaws.com"
-  //             },
-  //             "Effect": "Allow",
-  //             "Sid": ""
-  //         }
-  //     ]
-  // }
-  // EOF
 }
 
 resource "aws_security_group" "simian_army_instance" {
