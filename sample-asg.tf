@@ -48,12 +48,12 @@ resource "aws_security_group" "elb_sg" {
 }
 
 data "template_file" "ehime_userdata" {
-  template = "${file("${path.module}/templates/ehime-userdata.tpl")}"
+  template = "${file("${path.module}/templates/test-userdata.tmpl.sh")}"
 }
 
 resource "aws_launch_configuration" "ehime_lc" {
   name_prefix                 = "${var.team_name}-"
-  image_id                    = "${var.ami_id}"
+  image_id                    = "${data.aws_ami.ubuntu.id}"
   instance_type               = "${var.instance_type}"
   key_name                    = "${var.ssh_keyname}"
   user_data                   = "${data.template_file.ehime_userdata.rendered}"

@@ -23,10 +23,6 @@ variable "ami_id" {
   default = ""
 }
 
-variable "simian_army_ami_id" {
-  type = "string"
-}
-
 variable "instance_type" {
   type    = "string"
   default = "t2.nano"
