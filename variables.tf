@@ -17,7 +17,8 @@ variable "team_name" {
 }
 
 variable "ami_id" {
-  type = "string"
+  type    = "string"
+  default = ""
 }
 
 variable "simian_army_ami_id" {

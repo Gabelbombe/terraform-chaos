@@ -52,10 +52,6 @@ resource "aws_iam_role_policy_attachment" "simian_army_role_ec2_full_access" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
 }
 
-data "template_file" "monkey_user_data" {
-  template = "${file("${path.module}/monkey-userdata.tpl")}"
-}
-
 resource "aws_instance" "simian_army" {
   subnet_id                   = "${var.subnet_id}"
   ami                         = "${var.ami_id}"
